@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret Message | مدرسة السلام الثانوية الشاملة المختلطة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --pink:#f472a0;
+    --pink-soft:#ffe3ee;
+    --pink-bg:#fff5f9;
+    --ink:#3a3a44;
+    --gray:#8b8b96;
+    --green:#3ecf8e;
+    --radius:20px;
+    --shadow:0 10px 30px rgba(244,114,160,.15);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+  body{
+    background:var(--pink-bg);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ===== خلفية ناعمة متحركة ===== */
+  .blob{
+    position:fixed;border-radius:50%;filter:blur(70px);opacity:.45;z-index:0;
+    animation:float 14s ease-in-out infinite;
+    pointer-events:none;
+  }
+  .blob.b1{width:340px;height:340px;background:#ffd0e2;top:-80px;right:-80px}
+  .blob.b2{width:280px;height:280px;background:#ffe9f2;bottom:5%;left:-90px;animation-delay:-5s}
+  .blob.b3{width:200px;height:200px;background:#ffc4da;top:45%;right:-70px;animation-delay:-9s}
+  @keyframes float{
+    0%,100%{transform:translateY(0) scale(1)}
+    50%{transform:translateY(-30px) scale(1.06)}
+  }
+  .dot{
+    position:fixed;border-radius:50%;background:var(--pink);opacity:.18;z-index:0;
+    animation:rise linear infinite;pointer-events:none;
+  }
+  @keyframes rise{
+    from{transform:translateY(110vh) rotate(0)}
+    to{transform:translateY(-15vh) rotate(360deg)}
+  }
+
+  .wrap{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:0 18px 60px}
+
+  /* ===== الترويسة ===== */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 4px;
+  }
+  .logo{
+    display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;
+  }
+  .logo .icon{
+    width:42px;height:42px;border-radius:14px;background:var(--pink);
+    display:grid;place-items:center;color:#fff;font-size:1.2rem;
+    box-shadow:var(--shadow);
+    animation:wiggle 5s ease-in-out infinite;
+  }
+  @keyframes wiggle{0%,100%{transform:rotate(0)}5%{transform:rotate(-8deg)}10%{transform:rotate(6deg)}15%{transform:rotate(0)}}
+  .badge{
+    background:#fff;border:1.5px solid var(--pink-soft);color:var(--pink);
+    padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:700;
+    box-shadow:var(--shadow);
+  }
+
+  /* ===== البطل ===== */
+  .hero{text-align:center;padding:34px 0 10px}
+  .hero .lock{
+    width:74px;height:74px;margin:0 auto 16px;border-radius:24px;
+    background:linear-gradient(135deg,var(--pink),#ff9dc0);
+    display:grid;place-items:center;font-size:2rem;color:#fff;
+    box-shadow:0 15px 35px rgba(244,114,160,.35);
+    animation:bob 3.5s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hero h1{font-size:clamp(1.6rem,5.5vw,2.3rem);font-weight:800;margin-bottom:10px}
+  .hero h1 span{color:var(--pink)}
+  .hero p{color:var(--gray);font-size:1rem;max-width:440px;margin:0 auto;line-height:1.8}
+
+  /* ===== البطاقات ===== */
+  .card{
+    background:#fff;border-radius:var(--radius);padding:24px 22px;
+    box-shadow:var(--shadow);border:1px solid #ffe9f2;
+    margin-top:26px;
+    animation:pop .6s ease both;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  .card h2{
+    font-size:1.2rem;font-weight:800;margin-bottom:6px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card .sub{color:var(--gray);font-size:.9rem;margin-bottom:16px}
+
+  label{display:block;font-weight:700;font-size:.92rem;margin-bottom:8px}
+  .subject-box{
+    background:var(--pink-bg);border:1.5px dashed var(--pink);
+    border-radius:14px;padding:12px 16px;font-weight:800;color:var(--pink);
+    display:flex;align-items:center;gap:8px;margin-bottom:18px;
+  }
+  textarea{
+    width:100%;min-height:150px;resize:vertical;
+    border:1.5px solid #f3d3e0;border-radius:14px;padding:14px 16px;
+    font-size:1rem;line-height:1.8;color:var(--ink);
+    background:#fffdfefe;outline:none;transition:.25s;
+  }
+  textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px var(--pink-soft)}
+  textarea::placeholder{color:#c3b3bc}
+  .hint{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:8px;font-size:.8rem;color:var(--gray);
+  }
+  .privacy-note{
+    display:flex;gap:8px;align-items:flex-start;
+    background:#fff8e6;border:1px solid #ffe3a3;color:#8a6d1a;
+    border-radius:12px;padding:10px 14px;font-size:.82rem;line-height:1.7;
+    margin-top:14px;
+  }
+  .filter-preview{
+    margin-top:12px;background:var(--pink-bg);border-radius:12px;
+    padding:10px 14px;font-size:.82rem;color:var(--gray);
+    display:none;line-height:1.7;
+  }
+  .filter-preview.show{display:block;animation:pop .3s ease}
+  .filter-preview b{color:var(--pink)}
+
+  /* ===== الزر ===== */
+  .btn{
+    width:100%;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--pink),#ff7fae);
+    color:#fff;font-size:1.05rem;font-weight:800;
+    padding:15px;border-radius:16px;margin-top:18px;
+    box-shadow:0 10px 25px rgba(244,114,160,.35);
+    transition:transform .15s, box-shadow .15s;
+    position:relative;overflow:hidden;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(244,114,160,.45)}
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .btn.ghost{
+    background:#fff;color:var(--pink);border:1.5px solid var(--pink);
+    box-shadow:none;
+  }
+  .btn.green{
+    background:linear-gradient(135deg,var(--green),#57dba2);
+    box-shadow:0 10px 25px rgba(62,207,142,.3);
+  }
+
+  /* ===== شاشة النجاح ===== */
+  .success{display:none;text-align:center}
+  .success.show{display:block;animation:pop .5s ease}
+  .success .check{
+    width:80px;height:80px;margin:6px auto 14px;border-radius:50%;
+    background:linear-gradient(135deg,var(--green),#6fe3ae);
+    display:grid;place-items:center;font-size:2.2rem;color:#fff;
+    box-shadow:0 12px 30px rgba(62,207,142,.35);
+    animation:bounceIn .6s cubic-bezier(.68,-.55,.27,1.55);
+  }
+  @keyframes bounceIn{from{transform:scale(0)}to{transform:scale(1)}}
+  .code-box{
+    background:var(--pink-bg);border:2px dashed var(--pink);
+    border-radius:16px;padding:16px;margin:16px 0 6px;
+    font-size:1.8rem;font-weight:800;letter-spacing:4px;color:var(--pink);
+    user-select:all;direction:ltr;
+  }
+  .copy-btn{
+    background:none;border:none;color:var(--gray);font-size:.8rem;cursor:pointer;
+    text-decoration:underline;margin-top:4px;
+  }
+
+  /* ===== المتابعة ===== */
+  .track-input{
+    width:100%;border:1.5px solid #f3d3e0;border-radius:14px;
+    padding:14px 16px;font-size:1.1rem;font-weight:700;text-align:center;
+    letter-spacing:3px;outline:none;direction:ltr;transition:.25s;
+  }
+  .track-input:focus{border-color:var(--pink);box-shadow:0 0 0 4px var(--pink-soft)}
+  .reply-view{margin-top:18px;display:none}
+  .reply-view.show{display:block;animation:pop .4s ease}
+  .msg-bubble{
+    background:var(--pink-bg);border-radius:14px 14px 14px 4px;
+    padding:14px 16px;line-height:1.9;font-size:.95rem;margin-bottom:12px;
+    border:1px solid #ffe0ec;
+  }
+  .msg-bubble.reply{
+    background:#eefaf4;border-color:#c9ecd9;border-radius:14px 14px 4px 14px;
+  }
+  .msg-bubble .who{font-size:.75rem;font-weight:800;color:var(--pink);margin-bottom:4px;display:block}
+  .msg-bubble.reply .who{color:var(--green)}
+  .status-pill{
+    display:inline-block;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:800;
+  }
+  .status-pill.wait{background:#fff3d6;color:#9a7200}
+  .status-pill.done{background:#dcf7ea;color:#177a4c}
+  .error-text{color:#d33;font-size:.85rem;margin-top:8px;display:none}
+
+  /* ===== الرسائل الإرشادية ===== */
+  .tips{display:grid;gap:12px;margin-top:16px}
+  .tip{
+    background:#fff;border:1px solid #ffe9f2;border-radius:16px;
+    padding:14px 18px;display:flex;gap:12px;align-items:flex-start;
+    box-shadow:0 4px 14px rgba(244,114,160,.07);
+    transition:transform .2s, box-shadow .2s;cursor:default;
+  }
+  .tip:hover{transform:translateY(-4px) rotate(-.5deg);box-shadow:0 12px 26px rgba(244,114,160,.16)}
+  .tip .emo{font-size:1.5rem;animation:bob 4s ease-in-out infinite;flex-shrink:0}
+  .tip p{font-size:.9rem;line-height:1.8;color:#55555f}
+  .tip p b{color:var(--ink)}
+
+  footer{
+    text-align:center;color:var(--gray);font-size:.82rem;line-height:1.9;
+    margin-top:50px;padding-top:20px;border-top:1px dashed #f3cfdd;
+  }
+  footer b{color:var(--ink)}
+
+  /* قصاصات الورق عند الإرسال */
+  .confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:99;border-radius:3px;pointer-events:none}
+
+  @media (max-width:480px){
+    .card{padding:20px 16px}
+    .code-box{font-size:1.4rem}
+  }
+
+#adminArea :root{
+    --pink:#f472a0;
+    --pink-soft:#ffe3ee;
+    --pink-bg:#fff5f9;
+    --ink:#3a3a44;
+    --gray:#8b8b96;
+    --green:#3ecf8e;
+    --amber:#f2b63c;
+    --radius:20px;
+    --shadow:0 10px 30px rgba(244,114,160,.15);
+  }
+#adminArea *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+#adminArea body{background:var(--pink-bg);color:var(--ink);min-height:100vh;position:relative;overflow-x:hidden}
+#adminArea .blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.4;z-index:0;pointer-events:none;animation:float 14s ease-in-out infinite}
+#adminArea .blob.b1{width:320px;height:320px;background:#ffd0e2;top:-80px;left:-80px}
+#adminArea .blob.b2{width:260px;height:260px;background:#ffe9f2;bottom:3%;right:-80px;animation-delay:-6s}
+#adminArea 0%, #adminArea 100%{transform:translateY(0)}
+#adminArea 50%{transform:translateY(-25px)}
+#adminArea .wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:0 18px 60px}
+#adminArea /* ===== تسجيل الدخول ===== */
+  #loginView{max-width:400px;margin:0 auto;padding-top:10vh}
+#adminArea .login-card{background:#fff;border-radius:26px;padding:34px 28px;box-shadow:var(--shadow);border:1px solid #ffe9f2;text-align:center;animation:pop .5s ease both}
+#adminArea .login-icon{width:76px;height:76px;margin:0 auto 14px;border-radius:24px;background:linear-gradient(135deg,var(--pink),#ff9dc0);display:grid;place-items:center;font-size:2rem;box-shadow:0 12px 28px rgba(244,114,160,.35)}
+#adminArea .login-card h1{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+#adminArea .login-card .sub{color:var(--gray);font-size:.85rem;margin-bottom:22px}
+#adminArea .field{margin-bottom:14px;text-align:right}
+#adminArea .field label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px}
+#adminArea .field input{width:100%;border:1.5px solid #f3d3e0;border-radius:14px;padding:13px 16px;font-size:1rem;outline:none;transition:.25s}
+#adminArea .field input:focus{border-color:var(--pink);box-shadow:0 0 0 4px var(--pink-soft)}
+#adminArea .err{background:#ffe9e9;color:#c33;border-radius:12px;padding:10px;font-size:.82rem;margin-bottom:12px;display:none}
+#adminArea .btn{width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--pink),#ff7fae);color:#fff;font-size:1rem;font-weight:800;padding:14px;border-radius:16px;box-shadow:0 10px 25px rgba(244,114,160,.35);transition:.15s}
+#adminArea .btn:hover{transform:translateY(-2px)}
+#adminArea .btn:active{transform:scale(.97)}
+#adminArea .btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink);box-shadow:none}
+#adminArea .btn.small{width:auto;padding:8px 18px;font-size:.85rem;border-radius:12px}
+#adminArea /* ===== اللوحة ===== */
+  #dashView{display:none}
+#adminArea #dashView.show{display:block}
+#adminArea header{display:flex;align-items:center;justify-content:space-between;padding:20px 4px}
+#adminArea .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+#adminArea .logo .icon{width:42px;height:42px;border-radius:14px;background:var(--pink);display:grid;place-items:center;color:#fff;font-size:1.2rem;box-shadow:var(--shadow)}
+#adminArea .live{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:var(--green)}
+#adminArea .live .pulse{width:9px;height:9px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+#adminArea 0%, #adminArea 100%{opacity:1;transform:scale(1)}
+#adminArea 50%{opacity:.4;transform:scale(.8)}
+#adminArea .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 24px}
+#adminArea .stat{background:#fff;border-radius:18px;padding:18px 10px;text-align:center;box-shadow:var(--shadow);border:1px solid #ffe9f2;transition:.2s}
+#adminArea .stat:hover{transform:translateY(-4px)}
+#adminArea .stat .num{font-size:1.8rem;font-weight:800;line-height:1.2}
+#adminArea .stat .lbl{font-size:.75rem;color:var(--gray);font-weight:700}
+#adminArea .stat.s-new .num{color:var(--pink)}
+#adminArea .stat.s-wait .num{color:var(--amber)}
+#adminArea .stat.s-done .num{color:var(--green)}
+#adminArea .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+#adminArea .tab{border:1.5px solid #f3d3e0;background:#fff;color:var(--gray);padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s}
+#adminArea .tab.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 6px 18px rgba(244,114,160,.3)}
+#adminArea .msg-item{background:#fff;border:1px solid #ffe9f2;border-radius:18px;padding:16px 18px;margin-bottom:12px;box-shadow:0 4px 14px rgba(244,114,160,.07);animation:pop .4s ease both;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#adminArea .msg-item.unread{border-right:4px solid var(--pink)}
+#adminArea .msg-item .info{flex:1;min-width:150px}
+#adminArea .msg-item .code{font-size:.72rem;color:var(--gray);direction:ltr;display:inline-block}
+#adminArea .msg-item .preview{font-size:.85rem;color:#66666f;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+#adminArea .msg-item .time{font-size:.7rem;color:#bbb}
+#adminArea .pill{padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:800;white-space:nowrap}
+#adminArea .pill.new{background:var(--pink-soft);color:var(--pink)}
+#adminArea .pill.wait{background:#fff3d6;color:#9a7200}
+#adminArea .pill.done{background:#dcf7ea;color:#177a4c}
+#adminArea .empty{background:#fff;border:1.5px dashed #f3cfdd;border-radius:18px;padding:36px;text-align:center;color:var(--gray);font-size:.9rem}
+#adminArea /* ===== عرض الرسالة والرد ===== */
+  #msgView{display:none;margin-top:20px}
+#adminArea #msgView.show{display:block;animation:pop .4s ease}
+#adminArea .card{background:#fff;border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow);border:1px solid #ffe9f2}
+#adminArea .msg-bubble{background:var(--pink-bg);border:1px solid #ffe0ec;border-radius:14px 14px 14px 4px;padding:14px 16px;line-height:1.9;font-size:.95rem;margin:12px 0}
+#adminArea .msg-bubble.reply{background:#eefaf4;border-color:#c9ecd9;border-radius:14px 14px 4px 14px}
+#adminArea .who{font-size:.75rem;font-weight:800;color:var(--pink);display:block;margin-bottom:4px}
+#adminArea .msg-bubble.reply .who{color:var(--green)}
+#adminArea textarea{width:100%;min-height:120px;resize:vertical;border:1.5px solid #f3d3e0;border-radius:14px;padding:14px 16px;font-size:1rem;line-height:1.8;outline:none;transition:.25s;margin-top:8px}
+#adminArea textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px var(--pink-soft)}
+#adminArea textarea::placeholder{color:#c3b3bc}
+#adminArea .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+#adminArea .actions .btn{flex:1;min-width:130px}
+#adminArea from{opacity:0;transform:translateY(20px)}
+#adminArea to{opacity:1;transform:translateY(0)}
+#adminArea .stats{gap:8px}
+#adminArea .stat{padding:14px 6px}
+#adminArea .stat .num{font-size:1.4rem}
+#adminArea{display:none}
+#adminArea .wrap{max-width:760px}
+</style>
+</head>
+<body>
+
+<!-- ================= منصة الطالب ================= -->
+<div id="stuView">
+<div class="wrap">
+
+
+  <header>
+    <div class="logo"><div class="icon">💬</div><div>Secret message</div></div>
+    <div class="badge">🔒 خاص وآمن</div>
+  </header>
+
+  <section class="hero">
+    <div class="lock">🕊️</div>
+    <h1>تواصل مع <span>المرشد المدرسي</span></h1>
+    <p>رسالتك تصل إلى المرشد دون الحاجة إلى كتابة اسمك.<br>يمكنك مشاركة ما يشغلك أو طلب المساعدة أو تقديم اقتراح بكل خصوصية.</p>
+  </section>
+
+  <!-- ===== نموذج الإرسال ===== -->
+  <div class="card" id="formCard">
+    <h2>🔒 رسالة مجهولة</h2>
+    <p class="sub">اكتب بحرّية.. لا أحد يعرف من أنت.</p>
+
+    <label>موضوع الرسالة</label>
+    <div class="subject-box">🏷️ ( مجهول )</div>
+
+    <label for="msg">رسالتك</label>
+    <textarea id="msg" maxlength="800" placeholder="اكتب رسالتك هنا...&#10;&#10;مثلاً: لدي مشكلة في أحد الأمور داخل المدرسة وأحتاج إلى نصيحة."></textarea>
+    <div class="hint"><span>🔒 لا تحتاج إلى كتابة اسمك أو معلومات تكشف هويتك.</span><span id="counter">0 / 800</span></div>
+
+    <div class="filter-preview" id="filterPreview"></div>
+
+    <button class="btn" id="sendBtn">📩 إرسال الرسالة</button>
+  </div>
+
+  <!-- ===== شاشة النجاح ===== -->
+  <div class="card success" id="successCard">
+    <div class="check">✅</div>
+    <h2>تم إرسال رسالتك بنجاح</h2>
+    <p class="sub">رمز المتابعة الخاص برسالتك:</p>
+    <div class="code-box" id="trackCode">----</div>
+    <button class="copy-btn" id="copyBtn">📋 نسخ الرمز</button>
+    <p class="sub" style="margin-top:14px">🔑 احتفظ بهذا الرمز. ستحتاج إليه لمعرفة رد المرشد لاحقًا.</p>
+    <button class="btn ghost" id="newMsgBtn">✍️ إرسال رسالة أخرى</button>
+  </div>
+
+  <!-- ===== المتابعة ===== -->
+  <div class="card">
+    <h2>💬 هل تريد معرفة رد المرشد؟</h2>
+    <p class="sub">أدخل رمز المتابعة الذي حصلت عليه عند إرسال رسالتك.</p>
+    <input class="track-input" id="trackInput" placeholder="A7K-294" maxlength="8">
+    <button class="btn green" id="trackBtn">🔍 عرض الرد</button>
+    <p class="error-text" id="trackError">⚠️ لم يتم العثور على رسالة بهذا الرمز. تأكد من كتابته بشكل صحيح.</p>
+
+    <div class="reply-view" id="replyView">
+      <div style="margin-bottom:10px"><span class="status-pill wait" id="statusPill">بانتظار الرد</span></div>
+      <div class="msg-bubble"><span class="who">📝 رسالتك</span><span id="myMsg"></span></div>
+      <div class="msg-bubble reply" id="replyBubble"><span class="who">👨‍🏫 رد المرشد</span><span id="counselorReply"></span></div>
+    </div>
+  </div>
+
+  <!-- ===== الرسائل الإرشادية ===== -->
+  <div class="card">
+    <h2>🌱 رسائل إرشادية</h2>
+    <p class="sub">كلمات قصيرة قد تصنع فرقًا كبيرًا.</p>
+    <div class="tips" id="tipsBox"></div>
+  </div>
+
+  <footer>
+    <b>مدرسة السلام الثانوية الشاملة المختلطة</b><br>
+    منصة التواصل والإرشاد الطلابي<br>
+    <span style="font-size:.72rem">سياسة الخصوصية: "مجهول" تعني أنك لا تكتب اسمك داخل الرسالة، وقد تُحفظ سجلات تقنية أساسية على خادم المدرسة لأمان المنصة.</span>
+  </footer>
+
+
+</div>
+</div>
+
+<!-- ================= لوحة المرشد ================= -->
+<div id="adminArea">
+<div class="wrap">
+
+
+  <!-- ===== تسجيل الدخول ===== -->
+  <div id="loginView">
+    <div class="login-card">
+      <div class="login-icon">👨‍🏫</div>
+      <h1>لوحة المرشد المدرسي</h1>
+      <p class="sub">مدرسة السلام الثانوية الشاملة المختلطة<br>منطقة خاصة — للمرشد فقط</p>
+      <div class="err" id="loginErr">⚠️ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+      <div class="field">
+        <label>اسم المستخدم</label>
+        <input type="text" id="user" autocomplete="username" placeholder="أدخل اسم المستخدم">
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input type="password" id="pass" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button class="btn" id="loginBtn">🔑 دخول</button>
+    </div>
+  </div>
+
+  <!-- ===== اللوحة ===== -->
+  <div id="dashView">
+    <header>
+      <div class="logo"><div class="icon">💬</div><div>لوحة المرشد</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="live"><span class="pulse"></span> مباشر</div>
+        <button class="btn ghost small" id="logoutBtn">خروج</button>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat s-new"><div class="num" id="stNew">0</div><div class="lbl">📩 رسائل جديدة</div></div>
+      <div class="stat s-wait"><div class="num" id="stWait">0</div><div class="lbl">💬 بانتظار الرد</div></div>
+      <div class="stat s-done"><div class="num" id="stDone">0</div><div class="lbl">✅ تم الرد عليها</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-filter="all">الكل</button>
+      <button class="tab" data-filter="new">جديدة</button>
+      <button class="tab" data-filter="wait">بانتظار الرد</button>
+      <button class="tab" data-filter="done">تم الرد</button>
+    </div>
+
+    <div id="msgList"></div>
+
+    <!-- عرض رسالة ورد -->
+    <div id="msgView" class="card">
+      <span class="code" id="vCode" style="font-size:.75rem;color:var(--gray);direction:ltr"></span>
+      <div class="msg-bubble"><span class="who">📝 رسالة الطالب</span><span id="vText"></span></div>
+      <div class="msg-bubble reply" id="vReplyBox" style="display:none"><span class="who">👨‍🏫 ردك السابق</span><span id="vReply"></span></div>
+      <label style="font-weight:700;font-size:.9rem">اكتب ردك للطالب...</label>
+      <textarea id="replyText" placeholder="مثلاً: شكرًا لأنك شاركت ما يزعجك. يمكنك التواصل معي داخل المدرسة وسأحاول مساعدتك."></textarea>
+      <div class="actions">
+        <button class="btn" id="sendReplyBtn">📨 إرسال الرد</button>
+        <button class="btn ghost" id="backBtn">↩️ رجوع للقائمة</button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</div>
+
+<script>
+/* ============ سكربت الطالب ============ */
+
+/* ============================================================
+   قائمة الكلمات غير اللائقة — تُستبدل تلقائيًا بـ ***
+   (يمكن للمدرسة تعديل القائمة بسهولة)
+============================================================ */
+const BAD_WORDS = [
+  "خرا","خرة","كلب","كلاب","حمار","حمير","غبي","اغبى","أغبى","مجنون","مخبل",
+  "عاهر","زانية","شرموط","قحب","منيوك","لوطي","سافل","وضيع","حيوان","بهيم",
+  "تافه","حقير","داعر","عاهرة","زاني","فاجر","فاجرة","منحط","حقيرة","أهبل","اهبل",
+  "كس","طيز","زب","بز","بوب","صدرك","مؤخرتك","كسك","زبي","شرج","جنس","نيك","سكس","سيكس",
+  "احا","عاه","يلعن","يلعنك","العنك","الله يلعن","انعل","انعلك","خنيث","خنزير","خنازير",
+  "متخلف","معتوه","معتاه","عيص","أرعن","ارعن","بلطجي","حرامي","حرامية","سارق","مجرم"
+];
+
+/* كلمات شديدة السوء → الرسالة تُرسل لكن تُحجب تمامًا */
+const SEVERE_WORDS = ["عرص","عرصة","قحبة","منيوكة","كسخت","كسمك","طيزك","زبك","شرموطة","لبوة","لبؤة","متناكة","متناك"];
+
+const STORE_KEY = "salam_msgs";
+
+/* ---------- أدوات ---------- */
+function loadMsgs(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || [] }catch(e){ return [] } }
+function saveMsgs(m){ localStorage.setItem(STORE_KEY, JSON.stringify(m)) }
+
+function filterText(t){
+  let out = " " + t + " ";
+  let severe = false;
+  SEVERE_WORDS.forEach(w=>{
+    const re = new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
+    if(re.test(out)) severe = true;
+    out = out.replace(re, "***");
+  });
+  BAD_WORDS.forEach(w=>{
+    const re = new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
+    out = out.replace(re, "***");
+  });
+  return { text: out.trim(), changed: out.trim() !== t.trim(), severe };
+}
+
+function makeCode(){
+  const chars="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const part=n=>Array.from({length:n},()=>chars[Math.floor(Math.random()*chars.length)]).join("");
+  return part(3)+"-"+part(3);
+}
+
+/* ---------- عدّاد الأحرف + معاينة الفلتر ---------- */
+const msgEl = document.getElementById("msg");
+const counter = document.getElementById("counter");
+const filterPreview = document.getElementById("filterPreview");
+
+msgEl.addEventListener("input", ()=>{
+  counter.textContent = msgEl.value.length + " / 800";
+  if(!msgEl.value.trim()){ filterPreview.classList.remove("show"); return; }
+  const f = filterText(msgEl.value);
+  if(f.changed){
+    filterPreview.innerHTML = "🛡️ <b>نظام الحماية:</b> تم حجب " + (f.severe? "عبارات غير مناسبة" : "بعض الكلمات غير اللائقة") + " من رسالتك تلقائيًا قبل الإرسال.";
+    filterPreview.classList.add("show");
+  } else filterPreview.classList.remove("show");
+});
+
+/* ---------- الإرسال ---------- */
+document.getElementById("sendBtn").addEventListener("click", ()=>{
+  const raw = msgEl.value.trim();
+  if(raw.length < 3){
+    msgEl.style.borderColor = "#e35";
+    msgEl.focus();
+    setTimeout(()=>msgEl.style.borderColor = "", 1200);
+    return;
+  }
+  const f = filterText(raw);
+  const code = makeCode();
+  const msgs = loadMsgs();
+  msgs.push({ code, text: f.text, status: "wait", reply: null, date: Date.now() });
+  saveMsgs(msgs);
+
+  document.getElementById("trackCode").textContent = code;
+  document.getElementById("formCard").style.display = "none";
+  document.getElementById("successCard").classList.add("show");
+  document.getElementById("successCard").scrollIntoView({behavior:"smooth", block:"center"});
+  confetti();
+});
+
+document.getElementById("copyBtn").addEventListener("click", function(){
+  navigator.clipboard.writeText(document.getElementById("trackCode").textContent).catch(()=>{});
+  this.textContent = "✓ تم النسخ";
+  setTimeout(()=>this.textContent = "📋 نسخ الرمز", 1500);
+});
+
+document.getElementById("newMsgBtn").addEventListener("click", ()=>{
+  msgEl.value = ""; counter.textContent = "0 / 800";
+  filterPreview.classList.remove("show");
+  document.getElementById("successCard").classList.remove("show");
+  document.getElementById("formCard").style.display = "block";
+  document.getElementById("formCard").scrollIntoView({behavior:"smooth"});
+});
+
+/* ---------- المتابعة ---------- */
+document.getElementById("trackBtn").addEventListener("click", ()=>{
+  const code = document.getElementById("trackInput").value.trim().toUpperCase();
+  const err = document.getElementById("trackError");
+  const view = document.getElementById("replyView");
+  const pill = document.getElementById("statusPill");
+  const m = loadMsgs().find(x => x.code === code);
+  if(!m){
+    err.style.display = "block"; view.classList.remove("show");
+    return;
+  }
+  err.style.display = "none";
+  document.getElementById("myMsg").textContent = m.text;
+  document.getElementById("counselorReply").textContent = m.reply || "لم يتم الرد بعد. المرشد سيرد عليك قريبًا، تحقق لاحقًا.";
+  if(m.status === "done" && m.reply){ pill.className = "status-pill done"; pill.textContent = "✅ تم الرد عليها"; }
+  else { pill.className = "status-pill wait"; pill.textContent = "⏳ بانتظار الرد"; }
+  view.classList.add("show");
+  view.scrollIntoView({behavior:"smooth", block:"center"});
+});
+document.getElementById("trackInput").addEventListener("keydown", e=>{ if(e.key==="Enter") document.getElementById("trackBtn").click(); });
+
+/* ---------- الرسائل الإرشادية ---------- */
+const TIPS = [
+  {emo:"💙", text:"<b>لا تحتفظ بما يزعجك بداخلك.</b><br>طلب المساعدة ليس ضعفًا."},
+  {emo:"🌱", text:"<b>مشاعرك مهمة.</b><br>إذا كان هناك شيء يزعجك، تحدث مع شخص تثق به."},
+  {emo:"📚", text:"<b>لا تخجل من طلب المساعدة الدراسية.</b><br>المرشد موجود لمساعدتك."},
+  {emo:"🤝", text:"<b>احترم الآخرين واحترم نفسك.</b><br>الكلمة الطيبة يمكن أن تصنع فرقًا كبيرًا."},
+  {emo:"⭐", text:"<b>أنت لست مضطرًا لمواجهة المشكلة وحدك.</b>"}
+];
+document.getElementById("tipsBox").innerHTML = TIPS.map(t=>
+  `<div class="tip"><div class="emo">${t.emo}</div><p>${t.text}</p></div>`).join("");
+
+/* ---------- قصاصات احتفال ناعمة ---------- */
+function confetti(){
+  const colors = ["#f472a0","#ffd0e2","#3ecf8e","#ffe3a3"];
+  for(let i=0;i<26;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.cssText = `right:${Math.random()*100}vw;background:${colors[i%4]};
+      animation:fall ${2+Math.random()*1.5}s ease-in forwards;`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 3800);
+  }
+}
+const style = document.createElement("style");
+style.textContent = "@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:0}}";
+document.head.appendChild(style);
+
+/* ---------- نقاط وردية تطفو ---------- */
+for(let i=0;i<12;i++){
+  const d = document.createElement("div");
+  d.className = "dot";
+  const s = 6+Math.random()*10;
+  d.style.cssText = `width:${s}px;height:${s}px;right:${Math.random()*100}vw;
+    animation-duration:${12+Math.random()*15}s;animation-delay:-${Math.random()*15}s;`;
+  document.body.appendChild(d);
+}
+
+
+/* ============ سكربت المرشد ============ */
+
+/* ============================================================
+   بيانات دخول المرشد — غيّرها من هنا فقط
+============================================================ */
+const COUNSELOR_USER = "counselor";
+const COUNSELOR_PASS = "salam2026";
+
+const SESSION_KEY = "salam_counselor_session";
+
+/* حالة الرسالة: reply موجود = تم الرد | وإلا جديدة (إن لم تُفتح) أو بانتظار الرد */
+function statusOf(m){
+  if(m.reply) return "done";
+  return m.opened ? "wait" : "new";
+}
+
+/* ---------- تسجيل الدخول ---------- */
+const loginView = document.getElementById("loginView");
+const dashView  = document.getElementById("dashView");
+
+function tryLogin(){
+  const u = document.getElementById("user").value.trim();
+  const p = document.getElementById("pass").value;
+  if(u === COUNSELOR_USER && p === COUNSELOR_PASS){
+    sessionStorage.setItem(SESSION_KEY, "1");
+    showDash();
+  } else {
+    document.getElementById("loginErr").style.display = "block";
+  }
+}
+document.getElementById("loginBtn").addEventListener("click", tryLogin);
+document.getElementById("pass").addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+
+function showDash(){
+  loginView.style.display = "none";
+  dashView.classList.add("show");
+  render();
+}
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+});
+if(sessionStorage.getItem(SESSION_KEY) === "1") showDash();
+
+/* ---------- الفلاتر ---------- */
+let currentFilter = "all";
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    currentFilter = t.dataset.filter;
+    render();
+  });
+});
+
+/* ---------- العرض ---------- */
+function render(){
+  const msgs = loadMsgs().slice().reverse(); // الأحدث أولاً
+  const list = document.getElementById("msgList");
+
+  const counts = {new:0, wait:0, done:0};
+  msgs.forEach(m => counts[statusOf(m)]++);
+
+  // حرّك الأعداد بعدّاد لطيف
+  animNum("stNew", counts.new);
+  animNum("stWait", counts.wait);
+  animNum("stDone", counts.done);
+
+  const shown = msgs.filter(m => currentFilter === "all" || statusOf(m) === currentFilter);
+  if(!shown.length){
+    list.innerHTML = `<div class="empty">📭 لا توجد رسائل هنا حاليًا</div>`;
+    return;
+  }
+  list.innerHTML = shown.map(m=>{
+    const st = statusOf(m);
+    const pill = st==="new" ? '<span class="pill new">جديدة</span>'
+               : st==="wait" ? '<span class="pill wait">بانتظار الرد</span>'
+               : '<span class="pill done">تم الرد</span>';
+    const time = new Date(m.date).toLocaleString("ar", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"});
+    const btn = st==="done"
+      ? `<button class="btn ghost small" onclick="openMsg('${m.code}')">عرض</button>`
+      : `<button class="btn small" onclick="openMsg('${m.code}')">فتح</button>`;
+    return `<div class="msg-item ${st==="new"?"unread":""}">
+      <div class="info">
+        <span class="pill" style="background:var(--pink-bg);color:var(--ink)">🏷️ مجهول</span>
+        <span class="code">${m.code}</span>
+        <div class="preview">${escapeHtml(m.text)}</div>
+        <div class="time">${time}</div>
+      </div>
+      ${pill}${btn}
+    </div>`;
+  }).join("");
+}
+
+function animNum(id, target){
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent) || 0;
+  if(start === target){ el.textContent = target; return; }
+  const step = target > start ? 1 : -1;
+  let v = start;
+  const t = setInterval(()=>{
+    v += step;
+    el.textContent = v;
+    if(v === target) clearInterval(t);
+  }, 40);
+}
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* ---------- فتح الرسالة والرد ---------- */
+let currentCode = null;
+
+window.openMsg = function(code){
+  const msgs = loadMsgs();
+  const m = msgs.find(x => x.code === code);
+  if(!m) return;
+  m.opened = true;              // صارت "مقروءة" → بانتظار الرد
+  saveMsgs(msgs);
+
+  currentCode = code;
+  document.getElementById("vCode").textContent = code;
+  document.getElementById("vText").textContent = m.text;
+  const box = document.getElementById("vReplyBox");
+  if(m.reply){
+    box.style.display = "block";
+    document.getElementById("vReply").textContent = m.reply;
+    document.getElementById("replyText").value = m.reply;
+  } else {
+    box.style.display = "none";
+    document.getElementById("replyText").value = "";
+  }
+  document.getElementById("msgView").classList.add("show");
+  document.getElementById("msgView").scrollIntoView({behavior:"smooth", block:"start"});
+  render();
+};
+
+document.getElementById("backBtn").addEventListener("click", ()=>{
+  document.getElementById("msgView").classList.remove("show");
+  currentCode = null;
+});
+
+document.getElementById("sendReplyBtn").addEventListener("click", ()=>{
+  const txt = document.getElementById("replyText").value.trim();
+  if(txt.length < 2 || !currentCode) return;
+  const msgs = loadMsgs();
+  const m = msgs.find(x => x.code === currentCode);
+  if(!m) return;
+  m.reply = txt;
+  m.status = "done";
+  saveMsgs(msgs);
+
+  const btn = document.getElementById("sendReplyBtn");
+  btn.textContent = "✅ تم إرسال الرد";
+  btn.style.background = "linear-gradient(135deg,#3ecf8e,#57dba2)";
+  setTimeout(()=>{
+    btn.textContent = "📨 إرسال الرد";
+    btn.style.background = "";
+    document.getElementById("msgView").classList.remove("show");
+    currentCode = null;
+    render();
+  }, 1200);
+});
+
+/* تحديث تلقائي: أي رسالة جديدة من الطلاب تظهر مباشرة */
+let lastCount = loadMsgs().length;
+setInterval(()=>{
+  if(!dashView.classList.contains("show")) return;
+  const c = loadMsgs().length;
+  if(c !== lastCount){
+    lastCount = c;
+    render();
+    document.querySelector(".logo .icon").animate(
+      [{transform:"rotate(0)"},{transform:"rotate(-12deg)"},{transform:"rotate(10deg)"},{transform:"rotate(0)"}],
+      {duration:500});
+  }
+}, 2000);
+
+
+/* ============ الموجّه: #admin = لوحة المرشد ============ */
+function route(){
+  const isAdmin = location.hash === "#admin";
+  document.getElementById("stuView").style.display = isAdmin ? "none" : "block";
+  document.getElementById("adminArea").style.display = isAdmin ? "block" : "none";
+  if(isAdmin){
+    window.scrollTo(0,0);
+    if(sessionStorage.getItem(SESSION_KEY) === "1") showDash();
+  } else {
+    window.scrollTo(0,0);
+  }
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
